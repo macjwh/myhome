@@ -22,7 +22,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setEnabled(true);
         Role role = new Role();
-        role.setId(1l); // ROLE_USER;
+        role.setId(1l); // ROLE_USER(default);
 
         user.getRoles().add(role);
         return userRepository.save(user);

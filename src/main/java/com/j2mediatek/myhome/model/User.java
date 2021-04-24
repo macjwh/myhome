@@ -1,5 +1,6 @@
 package com.j2mediatek.myhome.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.Data;
 
@@ -15,7 +16,7 @@ public class User {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private long id;
     @NotNull
-    @Size(min=2, max=50, message="제목은 2이상 50자 이하입니다.")
+    @Size(min=6, max=20, message="유저명은 6이상 20자 이하입니다.")
     private String username;
     private String password;
     private boolean enabled;
@@ -26,5 +27,8 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private List<Role> roles = new ArrayList<Role>();
+    private List<Role> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
+    private List<Board> boards = new ArrayList<>();
 }

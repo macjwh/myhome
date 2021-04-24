@@ -1,5 +1,6 @@
 package com.j2mediatek.myhome.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.Data;
 
@@ -16,5 +17,6 @@ public class Role {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
+    @JsonIgnore
     List<User> users;
 }

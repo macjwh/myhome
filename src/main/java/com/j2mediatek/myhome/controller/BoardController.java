@@ -2,7 +2,9 @@ package com.j2mediatek.myhome.controller;
 
 import com.j2mediatek.myhome.model.Board;
 import com.j2mediatek.myhome.repository.BoardRepository;
+import com.j2mediatek.myhome.service.BoardService;
 import com.j2mediatek.myhome.validator.BoardValidator;
+import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.boot.context.properties.bind.BindResult;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,6 +27,9 @@ public class BoardController {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private BoardService boardService;
 
     @Autowired
     private BoardValidator boardValidator;
@@ -47,17 +53,19 @@ public class BoardController {
         } else {
             model.addAttribute("board", new Board());
         }
+
         return "board/form";
     }
 
     @PostMapping("/form")
-    public String formSubmit(@Valid Board board, BindingResult bindingResult) {
+    public String formSubmit(@Valid Board board, BindingResult bindingResult, Authentication authentication) {
         boardValidator.validate(board, bindingResult);
         if (bindingResult.hasErrors()){
             return "board/form";
         }
+        String username = authentication.getName();
+        boardService.save(username, board);
 
-        boardRepository.save(board);
         return "redirect:/board/list";
     }
 }
